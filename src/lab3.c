@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 int main() {
-    printf(" pid = %d, my ppid = %d\n", 
+    printf("Proc pid = %d, proc ppid = %d\n", 
         getpid(), getppid());
     return 0;
 }
