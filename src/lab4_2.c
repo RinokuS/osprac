@@ -10,8 +10,11 @@ int main(int argc, char *argv[], char *envp[]) {
 
     if (pid == 0) {
         execle("robot.out", "robot.out", 0, envp);
+        printf("Error! Can`t work with file");
+        exit(-1);
     } else if (pid == -1) {
         printf("Error!");
+        exit(-1);
     } else {
         a = 2;
         printf("I`m main process! My pid = %d, my ppid = %d, result = %d\n", 
