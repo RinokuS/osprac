@@ -55,7 +55,7 @@ int main() {
         close(child[0]);
         // Читаем родителя
         size = read(parent[0], resstring, 14);
-        if (size < 0) {
+        if (size != 14) {
             printf("Can\'t read from parent\n");
             exit(-1);
         }
