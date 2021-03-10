@@ -22,24 +22,14 @@ int main() {
     file_size = ftell(file); // получаем размер файла
     rewind(file); // перемещаем указатель обратно на начало потока, ибо подсчет размера его двигает
 
-    // генерируем ключ разделяемой памяти для переменной размера файла
-    if ((key_for_size = ftok(pathname_for_size, 0)) < 0) { 
-        printf("Can\'t generate key\n"); 
-        exit(-1);
-    }
     // генерируем ключ разделяемой памяти (позволяет нам не пересекать деятельность независимых процессов)
-    if ((key = ftok(pathname, 0)) < 0) { 
-        printf("Can\'t generate key\n"); 
-        exit(-1);
-    }
-
-    // получаем по ключу дескриптор размером в один инт
-    if ((shmid_for_size = shmget(key_for_size, sizeof(int), 0666|IPC_CREAT)) < 0) {
-        printf("Can\'t create shared memory\n");
+    if ((key = ftok(pathname, 0)) < 0 || (key_for_size = ftok(pathname_for_size, 0)) < 0) { 
+        printf("Can\'t generate keys\n"); 
         exit(-1);
     }
     // получаем по ключу дескриптор нужного размера
-    if ((shmid = shmget(key, file_size * sizeof(char), 0666|IPC_CREAT)) < 0) {
+    if ((shmid = shmget(key, file_size * sizeof(char), 0666|IPC_CREAT)) < 0 ||
+            (shmid_for_size = shmget(key_for_size, sizeof(int), 0666|IPC_CREAT)) < 0) {
         printf("Can\'t create shared memory\n");
         exit(-1);
     }
@@ -54,7 +44,8 @@ int main() {
     // получаем адрес нашей разделяемой памяти для работы с ней
     if ((shared_mem_ptr = (char *)shmat(shmid, 
                                         NULL, // желаемый адрес, куда мы хотим записать нашу разделяемую память, в нашем случае нам все равно
-                                        0)) == (char *)(-1)) {
+                                        0)) == (char *)(-1) ||
+        (shared_mem_ptr_size = (int *)shmat(shmid_for_size, NULL, 0)) == (int *)(-1)) {
         printf("Can't attach shared memory\n");
         exit(-1);
     }
@@ -66,12 +57,7 @@ int main() {
         
     fclose(file);
     // детатчим разделяемую память для данного процесса
-    if (shmdt(shared_mem_ptr_size) < 0) {
-        printf("Can't detach shared memory\n");
-        exit(-1);
-    }
-    // детатчим разделяемую память для данного процесса
-    if (shmdt(shared_mem_ptr) < 0) {
+    if (shmdt(shared_mem_ptr_size) < 0 || shmdt(shared_mem_ptr) < 0) {
         printf("Can't detach shared memory\n");
         exit(-1);
     }
