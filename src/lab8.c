@@ -65,5 +65,7 @@ int main() {
   //
   pthread_join(thid, (void **)NULL);
   pthread_join(thid2, (void **)NULL);
+
+  pthread_mutex_destroy(&mutex);
   return 0;
 }
