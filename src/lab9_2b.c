@@ -47,12 +47,6 @@ int main() {
       }
   }
 
-  if (semop(semid, &WAIT, 1) < 0) { // Block 
-    printf("Something went wrong\n");
-    exit(-1);
-  }
-  // Critical section (Starting here because of 'new' variable)
-
   if ((shmid = shmget(key, 3*sizeof(int), 0666|IPC_CREAT|IPC_EXCL)) < 0) {
     if (errno != EEXIST) {
       printf("Can\'t create shared memory\n");
@@ -70,6 +64,11 @@ int main() {
     exit(-1);
   }
 
+  if (semop(semid, &WAIT, 1) < 0) {
+    printf("Something went wrong\n");
+    exit(-1);
+  }
+  // Critical section
   if (new) {
     array[0] =  0;
     array[1] =  1;
