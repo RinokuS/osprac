@@ -11,7 +11,8 @@
 
 #define MAX_SIZE 100 
 
-char alp[] = {'a', 'b', 'c', 'd', 'e'};
+char alp[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+                't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
 int main(void) {
     const char first_file_name[] = "a";
@@ -32,6 +33,8 @@ int main(void) {
 
         symlink(pathname, pathname2); // создаем связь
 
+        printf("%s\n", pathname);
+        printf("%s\n", pathname2);
         for(int i=0; pathname2[i]!='\0'; i++) {
             pathname[i] = pathname2[i]; // копируем вторую строку в первую для продолжения цикла создания связей
         }
