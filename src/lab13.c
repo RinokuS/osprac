@@ -33,8 +33,6 @@ int main(void) {
 
         symlink(pathname, pathname2); // создаем связь
 
-        printf("%s\n", pathname);
-        printf("%s\n", pathname2);
         for(int i=0; pathname2[i]!='\0'; i++) {
             pathname[i] = pathname2[i]; // копируем вторую строку в первую для продолжения цикла создания связей
         }
